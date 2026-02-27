@@ -638,16 +638,52 @@
     closeMenu();
   }
 
+
+  let modalOpen = null; // 'daily' | 'weekly' | null
+  function pushModalState(kind){
+    // Push a history state so the browser back button closes the modal instead of navigating away.
+    try{
+      history.pushState({ frModal: kind }, "");
+      modalOpen = kind;
+    } catch {}
+  }
+  function clearModalState(){
+    modalOpen = null;
+  }
+
+  window.addEventListener("popstate", (e) => {
+    // If a modal is open, close it on back.
+    if (modalOpen === "daily") {
+      hideModal($("modalDaily"), false);
+      clearModalState();
+      return;
+    }
+    if (modalOpen === "weekly") {
+      hideModal($("modalWeekly"), false);
+      clearModalState();
+      return;
+    }
+  });
+
   function showModal(el){
     el.hidden = false;
     el.removeAttribute("hidden");
     document.body.style.overflow = "hidden";
+    try{
+      if (el && el.id === "modalDaily") pushModalState("daily");
+      if (el && el.id === "modalWeekly") pushModalState("weekly");
+    } catch {}
   }
-  function hideModal(el){
+  function hideModal(el, goBack=true){
     if (!el || el.hidden) return;
     el.hidden = true;
     el.setAttribute("hidden", "");
     document.body.style.overflow = "";
+    // If user closed via UI, pop the history state so Back behaves normally.
+    try{
+      if (goBack && modalOpen) { clearModalState(); history.back(); }
+      else { clearModalState(); }
+    } catch { clearModalState(); }
   }
 
   function todayISO(){

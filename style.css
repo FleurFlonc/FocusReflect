@@ -72,3 +72,36 @@ background:rgba(246,251,250,.92);backdrop-filter:blur(10px);z-index:40}
 .privacy .card,.privacy .view,.privacy .pill,.privacy .field input,.privacy .field textarea{filter:blur(7px)}
 .privacy .bottom-nav,.privacy .topbar{filter:none}
 @media (max-width:920px){.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.subtitle{display:none}}
+
+/* Modal scrolling fix (iOS-friendly) */
+.modal-card{
+  max-height: calc(100vh - 28px);
+  display: flex;
+  flex-direction: column;
+}
+.modal-body{
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.modal-head{
+  flex: 0 0 auto;
+}
+
+/* Modal scrolling fix v2 (iOS Safari) */
+.modal{
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+.modal-card{
+  max-height: calc(100vh - 24px);
+  display: flex;
+  flex-direction: column;
+}
+.modal-body{
+  flex: 1 1 auto;
+  min-height: 0; /* critical for flex scroll on iOS */
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
