@@ -16,18 +16,18 @@
       <div class="logo" aria-hidden="true">🧭</div>
       <div>
         <div class="title">Focus Reflect</div>
-        <div class="subtitle">Daily • Weekly • Cycles • lokaal op dit apparaat</div>
+        <div class="subtitle">Daily & Weekly review • doelen • energie • groei</div>
       </div>
     </div>
 
     <div class="actions">
       <button id="btnPrivacy" class="btn btn-ghost" type="button" aria-pressed="false">Privacy</button>
-      <button id="btnMode" class="btn btn-ghost" type="button" aria-pressed="false" title="Zakelijk / Persoonlijk / Alles">Zakelijk</button>
-      <button id="btnQuickCheckin" class="btn btn-primary" type="button">Daily</button>
 
       <div class="menu">
         <button id="btnMenu" class="btn btn-ghost" type="button" aria-haspopup="true" aria-expanded="false">☰</button>
         <div id="menuPanel" class="menu-panel" role="menu" aria-label="Menu" hidden>
+          <button id="btnOpenSettings" class="menu-item" type="button" role="menuitem">⚙️ Instellingen</button>
+          <div class="menu-sep" aria-hidden="true"></div>
           <button id="btnExport" class="menu-item" type="button" role="menuitem">⬇️ Export JSON</button>
           <label class="menu-item filelabel" role="menuitem">
             ⬆️ Import JSON
@@ -41,23 +41,25 @@
   </header>
 
   <main class="container">
-    <section class="projects" aria-label="Context">
-      <div id="contextTabs" class="context-tabs" role="tablist" aria-label="Context tabs"></div>
-      <button id="btnNewContext" class="btn btn-ghost btn-compact" type="button">＋ Context</button>
+    <section class="modebar" aria-label="Mode">
+      <div class="seg" role="tablist" aria-label="Zakelijk of privé">
+        <button id="modeBiz" class="segbtn" type="button" role="tab" aria-selected="true">Zakelijk</button>
+        <button id="modePer" class="segbtn" type="button" role="tab" aria-selected="false">Privé</button>
+      </div>
+      <div id="modeHint" class="modehint">Start hier</div>
     </section>
 
     <section id="reminders" class="reminders" aria-label="Reminders" hidden></section>
 
-    <section id="viewToday" class="view" aria-label="Vandaag"></section>
+    <section id="viewHome" class="view" aria-label="Start"></section>
     <section id="viewWeek" class="view" aria-label="Week" hidden></section>
     <section id="viewDashboard" class="view" aria-label="Dashboard" hidden></section>
     <section id="viewSettings" class="view" aria-label="Instellingen" hidden></section>
 
     <nav class="bottom-nav" aria-label="Navigatie">
-      <button class="navbtn" data-nav="today" aria-current="page">Vandaag</button>
+      <button class="navbtn" data-nav="home" aria-current="page">Vandaag</button>
       <button class="navbtn" data-nav="week">Week</button>
       <button class="navbtn" data-nav="dash">Dashboard</button>
-      <button class="navbtn" data-nav="settings">Instellingen</button>
     </nav>
   </main>
 
@@ -66,91 +68,56 @@
       <div class="modal-head">
         <div>
           <div id="dailyTitle" class="modal-title">Daily</div>
-          <div class="modal-subtitle">2–3 minuten</div>
+          <div class="modal-subtitle">kort • 2–3 minuten</div>
         </div>
         <button id="btnCloseDaily" class="iconbtn" type="button" aria-label="Sluit">✕</button>
-      </div>
-
-      <div class="modal-tabs" role="tablist" aria-label="Daily stappen">
-        <button class="steptab" data-step="1" aria-selected="true">1 Focus</button>
-        <button class="steptab" data-step="2">2 Energie & Tijd</button>
-        <button class="steptab" data-step="3">3 Check-out</button>
       </div>
 
       <form id="dailyForm" class="modal-body">
         <input type="hidden" id="dailyDate" />
 
-        <section class="step" data-step="1">
+        <label class="field">
+          <span>Top 1 (vandaag)</span>
+          <input id="top1" type="text" maxlength="160" placeholder="Wat maakt vandaag een succes?" />
+        </label>
+
+        <label class="field">
+          <span>Top 3 taken (1 per regel)</span>
+          <textarea id="top3" rows="4" maxlength="2000" placeholder="- taak 1&#10;- taak 2&#10;- taak 3"></textarea>
+        </label>
+
+        <div class="grid2">
           <label class="field">
-            <span>Top 1 (vandaag)</span>
-            <input id="top1" type="text" maxlength="160" placeholder="Wat maakt vandaag een succes?" />
+            <span>Energie start (1–5)</span>
+            <input id="energyStart" type="range" min="1" max="5" step="1" />
+            <div class="rangehint"><span>laag</span><span id="energyStartVal" class="pill mini">3</span><span>hoog</span></div>
           </label>
 
           <label class="field">
-            <span>Top 3 taken (1 per regel)</span>
-            <textarea id="top3" rows="4" maxlength="2000" placeholder="- taak 1&#10;- taak 2&#10;- taak 3"></textarea>
-          </label>
-
-          <label class="field">
-            <span>Mode</span>
-            <select id="modeDaily">
-              <option value="business">Zakelijk</option>
-              <option value="personal">Persoonlijk</option>
-            </select>
-          </label>
-
-          <label class="field">
-            <span>Zelfontwikkeling (micro-stap)</span>
+            <span>Zelfontwikkeling (micro)</span>
             <select id="growth">
               <option value="">(geen)</option>
               <optgroup label="Zakelijk">
-                <option value="biz_leren">10 min leren (skill)</option>
+                <option value="biz_leren">10 min leren</option>
                 <option value="biz_sales">10 min sales/marketing</option>
                 <option value="biz_proces">10 min proces verbeteren</option>
                 <option value="biz_netwerk">10 min netwerk</option>
               </optgroup>
-              <optgroup label="Persoonlijk">
+              <optgroup label="Privé">
                 <option value="per_bewegen">10 min bewegen</option>
-                <option value="per_rust">10 min rust/adem</option>
+                <option value="per_rust">10 min rust</option>
                 <option value="per_reflectie">10 min reflectie</option>
                 <option value="per_creatief">10 min creatief</option>
                 <option value="per_relaties">10 min relaties</option>
               </optgroup>
             </select>
           </label>
-        </section>
+        </div>
 
-        <section class="step" data-step="2" hidden>
-          <div class="grid2">
-            <label class="field">
-              <span>Energie nu (1–5)</span>
-              <input id="energyStart" type="range" min="1" max="5" step="1" />
-              <div class="rangehint"><span>laag</span><span id="energyStartVal" class="pill mini">3</span><span>hoog</span></div>
-            </label>
-
-            <label class="field">
-              <span>Verwachte tijd Top 1</span>
-              <select id="timePlan">
-                <option value="">(onbekend)</option>
-                <option value="15">15 min</option>
-                <option value="30">30 min</option>
-                <option value="60">60 min</option>
-                <option value="120">2 uur+</option>
-              </select>
-            </label>
-          </div>
-
+        <details class="more">
+          <summary>Meer opties (optioneel)</summary>
           <label class="field">
-            <span>Energie-impact Top 1</span>
-            <select id="energyImpact">
-              <option value="geeft">Geeft energie</option>
-              <option value="neutraal">Neutraal</option>
-              <option value="kost">Kost energie</option>
-            </select>
-          </label>
-
-          <label class="field">
-            <span>Grootste blokkade vandaag</span>
+            <span>Blokkade</span>
             <select id="blocker">
               <option value="">(geen)</option>
               <option value="adhoc">Te veel ad-hoc</option>
@@ -163,57 +130,46 @@
           </label>
 
           <label class="field">
-            <span>Notitie (optioneel)</span>
-            <textarea id="note" rows="3" maxlength="2000" placeholder="Context / afspraken / wat je niet wilt vergeten…"></textarea>
+            <span>Notitie</span>
+            <textarea id="note" rows="3" maxlength="2000" placeholder="Context / afspraken / reminders…"></textarea>
           </label>
-        </section>
 
-        <section class="step" data-step="3" hidden>
           <label class="checkline">
             <input id="top1Done" type="checkbox" />
             <span>Top 1 gedaan</span>
           </label>
 
-          <label class="field">
-            <span>Waarom (als niet gedaan) / reflectie (1 zin)</span>
-            <input id="reflection" type="text" maxlength="220" placeholder="Wat neem je mee naar morgen?" />
-          </label>
-
           <div class="grid2">
             <label class="field">
-              <span>Energie na vandaag (1–5)</span>
+              <span>Energie eind (1–5)</span>
               <input id="energyEnd" type="range" min="1" max="5" step="1" />
               <div class="rangehint"><span>laag</span><span id="energyEndVal" class="pill mini">3</span><span>hoog</span></div>
             </label>
-
             <label class="field">
-              <span>Tijdvreter vandaag?</span>
+              <span>Tijdvreter</span>
               <select id="timeDrain">
                 <option value="">(geen)</option>
                 <option value="mail">Mail/DM</option>
-                <option value="meetings">Overleg/meetings</option>
-                <option value="admin">Admin/boekhouding</option>
-                <option value="zoeken">Zoeken/uitzoeken</option>
-                <option value="contextswitch">Context-switching</option>
+                <option value="meetings">Meetings</option>
+                <option value="admin">Admin</option>
+                <option value="zoeken">Zoeken</option>
+                <option value="contextswitch">Context-switch</option>
                 <option value="anders">Anders</option>
               </select>
             </label>
           </div>
 
           <label class="field">
-            <span>Verbetering voor morgen (1 stap)</span>
+            <span>1 verbetering voor morgen</span>
             <input id="improve" type="text" maxlength="220" placeholder="Bijv. ‘Top 1 splitsen in 2 subacties’" />
           </label>
-        </section>
+        </details>
 
         <div class="modal-actions">
-          <button id="btnPrevStep" class="btn btn-ghost" type="button">←</button>
-          <div class="spacer"></div>
-          <button id="btnNextStep" class="btn btn-ghost" type="button">→</button>
           <button class="btn btn-primary" type="submit">Opslaan</button>
         </div>
 
-        <p class="hint">Tip: op iPhone kun je dicteren in tekstvelden via de microfoon op je toetsenbord.</p>
+        <p class="hint">Tip: dicteren kan via de microfoon op je iPhone-toetsenbord.</p>
       </form>
     </div>
   </div>
@@ -223,7 +179,7 @@
       <div class="modal-head">
         <div>
           <div id="weeklyTitle" class="modal-title">Weekly review</div>
-          <div class="modal-subtitle">10–20 minuten • checklist</div>
+          <div class="modal-subtitle">checklist • 10–20 minuten</div>
         </div>
         <button id="btnCloseWeekly" class="iconbtn" type="button" aria-label="Sluit">✕</button>
       </div>
@@ -231,60 +187,42 @@
       <form id="weeklyForm" class="modal-body">
         <input type="hidden" id="weekKey" />
 
-        <div class="sectiontitle">Get clear</div>
+        <div class="sectiontitle">Checklist</div>
         <label class="checkline"><input id="wcInbox" type="checkbox" /><span>Inbox / losse notities verwerkt</span></label>
         <label class="checkline"><input id="wcOpenLoops" type="checkbox" /><span>Open loops / follow-ups bijgewerkt</span></label>
+        <label class="checkline"><input id="wcProjects" type="checkbox" /><span>Next actions helder</span></label>
 
-        <div class="sectiontitle">Get current</div>
-        <label class="checkline"><input id="wcProjects" type="checkbox" /><span>Projecten hebben next actions</span></label>
-        <label class="checkline"><input id="wcCalendar" type="checkbox" /><span>Vorige + komende week globaal bekeken</span></label>
-
-        <div class="sectiontitle">Mode</div>
+        <div class="sectiontitle">Weekfocus</div>
         <label class="field">
-          <span>Zakelijk / Persoonlijk</span>
-          <select id="modeWeekly">
-            <option value="business">Zakelijk</option>
-            <option value="personal">Persoonlijk</option>
-          </select>
-        </label>
-
-        <div class="sectiontitle">Doelen & KPI</div>
-        <label class="field">
-          <span>Week Top 3 doelen (1 per regel)</span>
+          <span>Top 3 weekdoelen (1 per regel)</span>
           <textarea id="weekTop3" rows="3" maxlength="2000" placeholder="- doel 1&#10;- doel 2&#10;- doel 3"></textarea>
         </label>
 
-        <div class="grid2">
-          <label class="field">
-            <span>Leadgesprekken deze week</span>
-            <input id="leadsWeek" type="number" min="0" step="1" />
-          </label>
-          <label class="field">
-            <span>Confidence (1–5)</span>
-            <input id="confidence" type="range" min="1" max="5" step="1" />
-            <div class="rangehint"><span>laag</span><span id="confVal" class="pill mini">3</span><span>hoog</span></div>
-          </label>
-        </div>
+        <div class="sectiontitle">KPI</div>
+        <label class="field">
+          <span>Leadgesprekken deze week</span>
+          <input id="leadsWeek" type="number" min="0" step="1" />
+        </label>
 
         <div class="sectiontitle">Energie & tijd</div>
-        <label class="field"><span>Top energiegevers (1 per regel)</span><textarea id="energyGives" rows="2" maxlength="2000"></textarea></label>
-        <label class="field"><span>Top energievreters (1 per regel)</span><textarea id="energyCosts" rows="2" maxlength="2000"></textarea></label>
+        <label class="field"><span>Energiegevers (kort)</span><input id="energyGives" type="text" maxlength="220" placeholder="Bijv. klantgesprek, creatief maken…" /></label>
+        <label class="field"><span>Energievreters (kort)</span><input id="energyCosts" type="text" maxlength="220" placeholder="Bijv. admin, context switching…" /></label>
 
         <div class="grid2">
           <label class="field">
-            <span>Grootste tijdvreter (keuze)</span>
+            <span>Grootste tijdvreter</span>
             <select id="bigDrain">
               <option value="">(geen)</option>
               <option value="mail">Mail/DM</option>
-              <option value="meetings">Overleg/meetings</option>
-              <option value="admin">Admin/boekhouding</option>
-              <option value="zoeken">Zoeken/uitzoeken</option>
-              <option value="contextswitch">Context-switching</option>
+              <option value="meetings">Meetings</option>
+              <option value="admin">Admin</option>
+              <option value="zoeken">Zoeken</option>
+              <option value="contextswitch">Context-switch</option>
               <option value="anders">Anders</option>
             </select>
           </label>
           <label class="field">
-            <span>Verbeteractie (kies)</span>
+            <span>Verbeteractie</span>
             <select id="improveType">
               <option value="">(geen)</option>
               <option value="schrappen">Schrappen</option>
@@ -297,14 +235,12 @@
 
         <label class="field">
           <span>Concrete volgende stap</span>
-          <input id="nextStep" type="text" maxlength="220" placeholder="Bijv. ‘Maak template voor offerte-mail’" />
+          <input id="nextStep" type="text" maxlength="220" placeholder="Bijv. ‘Template maken’" />
         </label>
 
         <div class="modal-actions">
           <button class="btn btn-primary" type="submit">Opslaan</button>
         </div>
-
-        <p class="hint">Deze checklist is geïnspireerd op de GTD Weekly Review. (Zie bron in uitleg.)</p>
       </form>
     </div>
   </div>
