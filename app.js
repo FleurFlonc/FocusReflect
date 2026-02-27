@@ -148,7 +148,7 @@
   function renderAll(){
     $("modeBiz").setAttribute("aria-selected", String(mode() === "business"));
     $("modePer").setAttribute("aria-selected", String(mode() === "personal"));
-    $("modeHint").textContent = mode() === "business" ? "Zakelijk • doelen & KPI" : "Privé • welzijn & groei";
+    $("modeHint").textContent = mode() === "business" ? "Zakelijk • doelen & KPI" : "Privé • energie & herstel";
 
     renderReminders();
     renderHome();
@@ -207,24 +207,24 @@
           <p>${escapeHTML(longDateNL(today))} • ${isActiveDay ? "actieve dag" : "niet-actieve dag"}</p>
 
           <div class="grid2">
-            <button class="btn btn-primary" id="btnOpenDailyHome">Start Daily</button>
-            <button class="btn" id="btnOpenWeeklyHome">Open Weekly</button>
+            <button class="btn btn-primary" id="btnPlanHome">Plan (ochtend)</button>
+            <button class="btn" id="btnReflectHome">Reflect (avond)</button>
+          </div>
+
+          <div style="margin-top:10px;">
+            <button class="btn" id="btnOpenWeeklyHome" style="width:100%;">Open Weekly</button>
           </div>
 
           <div style="margin-top:10px;">
             <div class="pill">${d?.checkinDone ? "✅ Daily gedaan" : "⏱️ Daily open"}</div>
             <div class="pill">🎯 Top 1: ${escapeHTML(d?.top1 || "—")}</div>
           </div>
-
-          <div style="margin-top:10px;" class="grid2">
-            <button class="btn" id="btnLeadPlusHome">+1 lead</button>
-            <div class="pill">${renderLeadStatus()}</div>
           </div>
         </div>
 
         <div class="card">
           <h3>Waar begin ik?</h3>
-          <p>1) Start Daily (2–3 min) • 2) 1× per week Weekly • 3) Dashboard voor inzicht.</p>
+          <p>1) Plan (ochtend) • 2) Reflect (avond) • 3) 1× per week Weekly.</p>
           <div class="grid3">
             <div class="card" style="box-shadow:none;background:rgba(255,255,255,.7);">
               <h3 style="margin:0 0 6px;">Energie</h3>
@@ -245,9 +245,9 @@
       </div>
     `;
 
-    $("btnOpenDailyHome").addEventListener("click", () => openDaily(today));
+    $("btnPlanHome").addEventListener("click", () => openDaily(today, "plan"));
+    $("btnReflectHome").addEventListener("click", () => openDaily(today, "reflect"));
     $("btnOpenWeeklyHome").addEventListener("click", () => openWeekly(mondayOfThisWeekISO(today)));
-    $("btnLeadPlusHome").addEventListener("click", () => { addLeadEvent(); persist(); renderAll(); });
   }
 
   function renderLeadStatus(){
@@ -272,11 +272,11 @@
           <p>Week start: <b>${escapeHTML(wk)}</b> • Review-dag: <b>${dayLabel(settings().reviewDay)}</b></p>
           <div class="grid2">
             <button class="btn btn-primary" id="btnOpenWeekly">Open Weekly</button>
-            <button class="btn" id="btnLeadPlusWeek">+1 lead</button>
+            ${mode()==="business" ? `<button class="btn" id="btnLeadPlusWeek">+1 lead</button>` : ``}
           </div>
           <div style="margin-top:10px;">
             <div class="pill">Weekdoelen: ${escapeHTML(w.weekTop3 || "—")}</div>
-            <div class="pill">Leads (week): <b>${w.leadsWeek ?? 0}</b></div>
+            ${mode()==="business" ? `<div class="pill">Leads (week): <b>${w.leadsWeek ?? 0}</b></div>` : ``}
           </div>
         </div>
 
@@ -290,7 +290,8 @@
       </div>
     `;
     $("btnOpenWeekly").addEventListener("click", () => openWeekly(wk));
-    $("btnLeadPlusWeek").addEventListener("click", () => {
+    const leadBtn = $("btnLeadPlusWeek");
+    if (leadBtn) leadBtn.addEventListener("click", () => {
       addLeadEvent();
       weeklyMap()[wk] = weeklyMap()[wk] || {};
       weeklyMap()[wk].leadsWeek = (weeklyMap()[wk].leadsWeek || 0) + 1;
@@ -320,7 +321,7 @@
           <p>${escapeHTML(longDateNL(c.startISO))} → ${escapeHTML(longDateNL(c.endISO))}</p>
           <div class="pill">Actieve dagen met log: <b>${activity}</b> / ${possible}</div>
           <div class="pill">Gem. energie (ingevuld): <b>${avgEnergy ?? "—"}</b></div>
-          <div class="pill">${target>0 ? `Leads: <b>${leadCount}/${target}</b> (verwacht ~${expected})` : `Leads: <b>${leadCount}</b>`}</div>
+          ${mode()==="business" ? `<div class="pill">${target>0 ? `Leads: <b>${leadCount}/${target}</b> (verwacht ~${expected})` : `Leads: <b>${leadCount}</b>`}</div>` : `<div class="pill">Focus: energie (start/eind) + tijdvreters. Privé heeft geen KPI.</div>`}
         </div>
 
         <div class="card">
@@ -397,7 +398,7 @@
     });
   }
 
-  function openDaily(iso){
+  function openDaily(iso, view="plan"){
     const d = getOrCreateDaily(iso);
     $("dailyDate").value = iso;
     $("top1").value = d.top1 || "";
@@ -413,6 +414,26 @@
     $("energyEndVal").textContent = String(d.energyEnd || 3);
     $("timeDrain").value = d.timeDrain || "";
     $("improve").value = d.improve || "";
+
+    // Plan vs Reflect UX
+    const details = $("moreDetails");
+    if (details) {
+      if (view === "reflect") details.open = true;
+      else details.open = false;
+    }
+    // Focus a sensible field
+    setTimeout(() => {
+      try{
+        if (view === "reflect") {
+          const el = $("top1Done") || $("energyEnd") || $("improve");
+          if (el) el.focus();
+        } else {
+          const el = $("top1") || $("top3");
+          if (el) el.focus();
+        }
+      } catch {}
+    }, 0);
+
     showModal($("modalDaily"));
   }
   function closeDaily(){ hideModal($("modalDaily")); }
@@ -455,6 +476,12 @@
     $("wcProjects").checked = !!w.wcProjects;
     $("weekTop3").value = w.weekTop3 || "";
     $("leadsWeek").value = w.leadsWeek ?? 0;
+    // Hide KPI input in privé
+    try{
+      const lbl = $("leadsWeek").closest(".field");
+      if (lbl) lbl.style.display = (mode()==="business") ? "" : "none";
+    } catch {}
+
     $("energyGives").value = w.energyGives || "";
     $("energyCosts").value = w.energyCosts || "";
     $("bigDrain").value = w.bigDrain || "";
@@ -471,7 +498,7 @@
     w.wcOpenLoops = !!$("wcOpenLoops").checked;
     w.wcProjects = !!$("wcProjects").checked;
     w.weekTop3 = $("weekTop3").value.trim();
-    w.leadsWeek = parseInt($("leadsWeek").value||"0",10)||0;
+    w.leadsWeek = (mode()==="business") ? (parseInt($("leadsWeek").value||"0",10)||0) : 0;
     w.energyGives = $("energyGives").value.trim();
     w.energyCosts = $("energyCosts").value.trim();
     w.bigDrain = $("bigDrain").value||"";
