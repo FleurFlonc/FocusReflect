@@ -82,7 +82,19 @@
         </label>
 
         <label class="field">
-          <span>Top 3 taken (1 per regel)</span>
+          <span>Intentie (1 woord)</span>
+          <select id="intent">
+            <option value="">(geen)</option>
+            <option value="focus">Focus</option>
+            <option value="rust">Rust</option>
+            <option value="afmaken">Afmaken</option>
+            <option value="creatief">Creatief</option>
+            <option value="verbinden">Verbinden</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Top 3 taken (1 per regel)</span></span>
           <textarea id="top3" rows="4" maxlength="2000" placeholder="- taak 1&#10;- taak 2&#10;- taak 3"></textarea>
         </label>
 
@@ -134,9 +146,26 @@
             <textarea id="note" rows="3" maxlength="2000" placeholder="Context / afspraken / reminders…"></textarea>
           </label>
 
+          <label class="field">
+            <span>Context-tag</span>
+            <select id="contextTag">
+              <option value="">(geen)</option>
+              <option value="thuis">Thuis</option>
+              <option value="kantoor">Kantoor</option>
+              <option value="onderweg">Onderweg</option>
+              <option value="sociaal">Sociaal</option>
+              <option value="rustdag">Rustdag</option>
+            </select>
+          </label>
+
           <label class="checkline">
             <input id="top1Done" type="checkbox" />
             <span>Top 1 gedaan</span>
+          </label>
+
+          <label class="checkline">
+            <input id="miniHabit" type="checkbox" />
+            <span>Mini-habit gedaan</span>
           </label>
 
           <div class="grid2">
@@ -159,7 +188,12 @@
             </label>
           </div>
 
-          <label class="field">
+                    <label class="field">
+            <span>Win van de dag (1 zin)</span>
+            <input id="win" type="text" maxlength="220" placeholder="Wat ging er goed vandaag?" />
+          </label>
+
+<label class="field">
             <span>1 verbetering voor morgen</span>
             <input id="improve" type="text" maxlength="220" placeholder="Bijv. ‘Top 1 splitsen in 2 subacties’" />
           </label>
@@ -173,6 +207,23 @@
       </form>
     </div>
   </div>
+
+          <div class="grid2">
+            <label class="field">
+              <span>Afleiding (1–5)</span>
+              <input id="distraction" type="range" min="1" max="5" step="1" />
+              <div class="rangehint"><span>laag</span><span id="distractionVal" class="pill mini">3</span><span>hoog</span></div>
+            </label>
+            <label class="field">
+              <span>Impact</span>
+              <select id="impact">
+                <option value="">(geen)</option>
+                <option value="low">Laag</option>
+                <option value="mid">Midden</option>
+                <option value="high">Hoog</option>
+              </select>
+            </label>
+          </div>
 
   <div id="modalWeekly" class="modal" role="dialog" aria-modal="true" aria-labelledby="weeklyTitle" hidden>
     <div class="modal-card">

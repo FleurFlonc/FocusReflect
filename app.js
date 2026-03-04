@@ -406,6 +406,14 @@
     $("energyStart").value = String(d.energyStart || 3);
     $("energyStartVal").textContent = String(d.energyStart || 3);
     $("growth").value = d.growth || "";
+    $("intent").value = d.intent || "";
+    $("contextTag").value = d.contextTag || "";
+    $("miniHabit").checked = !!d.miniHabit;
+    $("distraction").value = String(d.distraction || 3);
+    $("distractionVal").textContent = String(d.distraction || 3);
+    $("impact").value = d.impact || "";
+    $("win").value = d.win || "";
+
 
     $("blocker").value = d.blocker || "";
     $("note").value = d.note || "";
@@ -446,6 +454,12 @@
     d.top3 = $("top3").value.trim();
     d.energyStart = parseInt($("energyStart").value,10)||3;
     d.growth = $("growth").value||"";
+    d.intent = $("intent").value||"";
+    d.contextTag = $("contextTag").value||"";
+    d.miniHabit = !!$("miniHabit").checked;
+    d.distraction = parseInt($("distraction").value,10)||3;
+    d.impact = $("impact").value||"";
+    d.win = $("win").value.trim();
 
     d.blocker = $("blocker").value||"";
     d.note = $("note").value.trim();
@@ -454,7 +468,7 @@
     d.timeDrain = $("timeDrain").value||"";
     d.improve = $("improve").value.trim();
 
-    d.checkinDone = !!(d.top1 || d.top3 || d.growth || d.note || d.blocker || d.energyStart);
+    d.checkinDone = !!(d.top1 || d.top3 || d.growth || d.intent || d.win || d.note || d.blocker || d.contextTag || d.energyStart || d.distraction || d.impact || d.miniHabit);
     d.updatedAt = new Date().toISOString();
 
     persist();
