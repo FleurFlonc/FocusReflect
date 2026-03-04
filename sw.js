@@ -1,4 +1,4 @@
-const CACHE_NAME = "focus-reflect-cache-v5";
+const CACHE_NAME = "focusreflect-v3-20260304";
 const CORE_ASSETS = [
   "./",
   "./index.html",
